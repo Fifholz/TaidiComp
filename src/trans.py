@@ -7,26 +7,28 @@ a = 6378245.0
 ee = 0.00669342162296594323
 x_pi = 3.14159265358979324 * 3000.0 / 180.0
  
-#转换经度
-def transformLat(lat,lon):
+def _transformLat(lat,lon):
     ret = -100.0 + 2.0 * lat + 3.0 * lon + 0.2 * lon * lon + 0.1 * lat * lon +0.2 * math.sqrt(abs(lat))
     ret += (20.0 * math.sin(6.0 * lat * math.pi) + 20.0 * math.sin(2.0 * lat * math.pi)) * 2.0 / 3.0
     ret += (20.0 * math.sin(lon * math.pi) + 40.0 * math.sin(lon / 3.0 * math.pi)) * 2.0 / 3.0
     ret += (160.0 * math.sin(lon / 12.0 * math.pi) + 320 * math.sin(lon * math.pi  / 30.0)) * 2.0 / 3.0
     return ret
- 
-#转换纬度
-def transformLon(lat,lon):
+
+def _transformLon(lat,lon):
     ret = 300.0 + lat + 2.0 * lon + 0.1 * lat * lat + 0.1 * lat * lon + 0.1 * math.sqrt(abs(lat))
     ret += (20.0 * math.sin(6.0 * lat * math.pi) + 20.0 * math.sin(2.0 * lat * math.pi)) * 2.0 / 3.0
     ret += (20.0 * math.sin(lat * math.pi) + 40.0 * math.sin(lat / 3.0 * math.pi)) * 2.0 / 3.0
     ret += (150.0 * math.sin(lat / 12.0 * math.pi) + 300.0 * math.sin(lat / 30.0 * math.pi)) * 2.0 / 3.0
     return ret
  
-#Wgs transform to gcj
 def wgs2gcj(lat,lon):
-    dLat = transformLat(lon - 105.0, lat - 35.0)
-    dLon = transformLon(lon - 105.0, lat - 35.0)
+    '''
+    将wgs坐标转换为gcj坐标。
+    :param lat:纬度
+    :param lon:经度
+    '''
+    dLat = _transformLat(lon - 105.0, lat - 35.0)
+    dLon = _transformLon(lon - 105.0, lat - 35.0)
     radLat = lat / 180.0 * math.pi
     magic = math.sin(radLat)
     magic = 1 - ee * magic * magic
@@ -40,6 +42,11 @@ def wgs2gcj(lat,lon):
  
 #gcj transform to bd2
 def gcj2bd(lat,lon):
+    '''
+    将gcj坐标转换为bd坐标。
+    :param lat:纬度
+    :param lon:经度
+    '''
     x=lon
     y=lat
     z = math.sqrt(x * x + y * y) + 0.00002 * math.sin(y * x_pi)
@@ -49,11 +56,9 @@ def gcj2bd(lat,lon):
     bdpoint = (bd_lon, bd_lat)
     return bdpoint
  
-#wgs transform to bd
 def wgs2bd(lat,lon):
     '''
-    WGS转bd坐标系。
-
+    WGS转bd坐标。
     :param lat:经度
     :param lon:纬度
     '''
@@ -61,9 +66,11 @@ def wgs2bd(lat,lon):
     gcj_to_bd = gcj2bd(wgs_to_gcj[0], wgs_to_gcj[1])
     return gcj_to_bd
 
+'''
+# 计算时间差
 def intervalTime(str1,str2):
-    #时间差
     time1 = datetime.datetime.strptime(str1, '%Y/%m/%d %H:%M:%S')
     time2 = datetime.datetime.strptime(str2, '%Y/%m/%d %H:%M:%S')
     difTime = time2 - time1
-    return difTime#datetime.timedelta,有天，秒，毫秒
+    return difTime
+'''

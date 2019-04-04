@@ -4,7 +4,7 @@ import trans as trans
 import datetime
 import os.path
 
-DATA_PATH = "./data/allData"
+DATA_PATH = "./data/testData"
 
 def speedRank(num, max_speed):
     bar = max_speed // 10

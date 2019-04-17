@@ -38,6 +38,9 @@ class carsData:
                 break
         return carMessage
 
+    def amount(self):
+        return len(self.data)
+
 if __name__ == "__main__":
     import json
     path = './data/testData'

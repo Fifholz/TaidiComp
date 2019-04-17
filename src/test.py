@@ -29,17 +29,19 @@ def produre(thisCar, carname):
     px, py = [], []
     v = speedRank(speed[0], max_speed)
     for i in range(len(x)-1):
-        if i % 10000 == 0 or i == len(x)-2:
+        if i % 1000 == 0 or i == len(x)-2:
             if i != 0:
                 if not os.path.isdir("./figures/{}".format(carname.split(".")[0])):
                     os.makedirs("./figures/{}".format(carname.split(".")[0]))
-                plt.savefig("./figures/{}/{}.png".format(carname.split(".")[0], str(i // 10000)))
+                plt.savefig("./figures/{}/{}.png".format(carname.split(".")[0], str(i // 1000)))
+                if i // 1000 == 3:
+                    return
             plt.figure(figsize = (32, 24))
         if speedRank(speed[i], max_speed) != v or (time[i+1]-time[i]).seconds > 10:
             if (time[i+1]-time[i]).seconds <= 10:
                 px.append(x[i])
                 py.append(y[i])                
-            plt.plot(px, py, linewidth = '2', color='#ff{:0>2x}{:0>2x}'.format(int(200-v*16),int(200-v*16)))
+            plt.plot(px, py, linewidth = '2', color='#ff{:0>2x}{:0>2x}'.format(int(255-v*16),int(v*20)))
             px, py = [], []
             v = speedRank(speed[i], max_speed)
         else:
@@ -52,3 +54,4 @@ if __name__ == "__main__":
     for car in data.data:
         thisCar = data.readCarMessage(car)
         produre(thisCar, car)
+        break
